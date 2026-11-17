@@ -1,0 +1,20 @@
+'use strict';
+window.LEARNING_TOOLKIT = {
+  defaults: {
+    prototypeTitle:'Bronnen onder de loep',
+    prototypeGoal:'Je kunt de betrouwbaarheid van een bron onderbouwen.',
+    prototypeCase:'Je vindt een bericht met een opvallend cijfer. Er is geen auteur of oorspronkelijke studie genoemd.',
+    prototypeQuestion:'Welke vervolgstap helpt je het best om de claim te beoordelen?',
+    prototypeA:'Delen, want het bericht ziet er professioneel uit.',
+    prototypeB:'De oorspronkelijke bron zoeken en de methode en context controleren.',
+    prototypeC:'Het aantal likes tellen.',
+    prototypeCorrect:'1',
+    prototypeFeedback:'De oorspronkelijke bron helpt je te controleren hoe de informatie is verkregen. Populariteit en uiterlijk bewijzen de juistheid niet.'
+  },
+  createHtml(input={}) {
+    const data={};
+    for(const [key,value] of Object.entries(this.defaults))data[key]=String(input[key]||value).slice(0,6000);
+    const safe=JSON.stringify(data).replace(/</g,'\\u003c');
+    return `<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Interactieve oefencasus</title><style>*{box-sizing:border-box}body{margin:0;padding:28px 20px;background:#f5f9fd;color:#263b4e;font:16px/1.7 Arial,sans-serif}main{max-width:720px;margin:auto}h1{line-height:1.25;font-size:28px}label{display:block;margin:14px 0}textarea{width:100%;font:inherit;padding:10px;border:1px solid #b7cfe0;border-radius:8px;min-height:85px}button{font:inherit;padding:11px 18px;background:#c8e6fa;border:1px solid #9fc6e2;border-radius:8px;color:#263b4e;cursor:pointer}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #286791;outline-offset:3px}.case{padding:18px;background:white;border:1px solid #dce7ef;border-radius:12px}fieldset{border:0;padding:0;margin:20px 0}.option{padding:10px;background:white;border:1px solid #dce7ef;border-radius:8px;cursor:pointer}#feedback{padding:15px;background:#fff3c7;border-radius:8px;margin-top:18px}footer{font-size:12px;margin-top:25px;color:#5d7285}</style></head><body><main><p>Oefenen · kies en onderbouw</p><h1 id="title"></h1><p id="goal"></p><section class="case"><h2>De situatie</h2><p id="case"></p></section><fieldset><legend id="question"></legend><div id="options"></div></fieldset><label for="reason">Waarom kies je dit antwoord?</label><textarea id="reason" placeholder="Onderbouw je keuze…"></textarea><button id="check" type="button">Bekijk feedback</button><div id="feedback" role="status" hidden></div><p><button type="button" id="again">Opnieuw oefenen</button></p><footer>Deze oefening slaat geen antwoorden op en verstuurt ze niet. De docent bespreekt je redenering met je. Dit prototype geeft geen officieel cijfer.</footer></main><script>const d=${safe};for(const [id,key] of [['title','prototypeTitle'],['goal','prototypeGoal'],['case','prototypeCase'],['question','prototypeQuestion']])document.getElementById(id).textContent=d[key];const options=document.getElementById('options');['prototypeA','prototypeB','prototypeC'].forEach((key,i)=>{const label=document.createElement('label');label.className='option';const radio=document.createElement('input');radio.type='radio';radio.name='answer';radio.value=i;label.append(radio,document.createTextNode(' '+d[key]));options.append(label)});document.getElementById('check').addEventListener('click',()=>{const selected=document.querySelector('input[name="answer"]:checked');const f=document.getElementById('feedback');f.hidden=false;if(!selected||!document.getElementById('reason').value.trim()){f.textContent='Kies een antwoord en schrijf eerst je redenering.';return;}f.textContent=(selected.value===d.prototypeCorrect?'Deze keuze sluit aan op het voorbeeld. ':'Vergelijk je keuze met de toelichting. ')+d.prototypeFeedback+' Bespreek ook je eigen argumenten.';});document.getElementById('again').addEventListener('click',()=>{document.querySelectorAll('input').forEach(i=>i.checked=false);document.getElementById('reason').value='';document.getElementById('feedback').hidden=true;});<\/script></body></html>`;
+  }
+};
